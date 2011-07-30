@@ -9,8 +9,8 @@ via pip::
 And then make the following changes to your graphite installation:
 
 * modify ``INSTALLED_APPS`` to include ``graphiteapi``
-* add graphite-api's urls to ``grahpite/urls.py``::
-    ('^api/?', include('graphiteapi.urls'))
+* add graphite-api's urls to ``grahpite/urls.py``:
+    ``('^api/?', include('graphiteapi.urls'))``
 
 You should now be able to hit ``http://your.graphite.server/api/`` for a simple
 JSON api to various data contained within your graphite server.
