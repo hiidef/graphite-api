@@ -39,14 +39,22 @@ def index(request):
 
 @jsonresponse
 def version(request):
-    import pkginfo
-    graphite_version = pkginfo.get_metadata('whisper').version
+    from django.conf import settings
+    import glob, pkginfo
+    whisper_version = pkginfo.get_metadata('whisper').version
     api_version = pkginfo.get_metadata('graphiteapi').version
+    carbon_pkginfo = glob.glob('/opt/graphite/lib/carbon*egg-info')[-1]
+    try:
+        carbon_version = pkginfo.get_metadata(carbon_pkginfo).version
+    except:
+        carbon_version = False
     if not api_version:
         from graphiteapi import VERSION
         api_version = '.'.join(map(str, VERSION))
     return {
-        'graphite': graphite_version,
+        'graphite': settings.WEBAPP_VERSION,
+        'carbon': carbon_version,
+        'whisper': whisper_version,
         'api': api_version,
     }
 
