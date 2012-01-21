@@ -10,7 +10,7 @@ except:
 
 import os
 from functools import wraps
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from os.path import splitext
 from django.conf import settings
 
@@ -36,6 +36,36 @@ def jsonresponse(func):
 @jsonresponse
 def index(request):
     return {'status': 'ok'}
+
+@jsonresponse
+def version(request):
+    import pkginfo
+    graphite_version = pkginfo.get_metadata('whisper').version
+    api_version = pkginfo.get_metadata('graphiteapi').version
+    if not api_version:
+        from graphiteapi import VERSION
+        api_version = '.'.join(map(str, VERSION))
+    return {
+        'graphite': graphite_version,
+        'api': api_version,
+    }
+
+@jsonresponse
+def stats_del(request):
+    """Removes a whisper file or a directory of whisper files.  The POST data
+    should contain a whisper file (or directory) path in the dotted notation
+    received from /stats/list/"""
+    if not request.POST['path']:
+        raise Http404
+    path = request.POST['path'].strip()
+    path = path.replace('.', '/')
+    ret = {'deleted': []}
+    for directory in settings.DATA_DIRS:
+        joined = '%s.wsp' % os.path.join(directory, path)
+        if os.path.isfile(joined):
+            os.unlink(joined)
+            ret['deleted'].append(joined)
+    return ret
 
 @jsonresponse
 def stats_list(request):

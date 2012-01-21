@@ -6,7 +6,11 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.1'
+try:
+    from graphiteapi import VERSION
+    version = '.'.join(map(str, VERSION))
+except:
+    version = '0.1'
 
 # some trove classifiers:
 
@@ -17,11 +21,11 @@ version = '0.1'
 setup(
     name='graphite-api',
     version=version,
-    description="graphtie api extensions for fronting graphite servers",
+    description="graphtie api extensions for integrating graphite services into other dashboards",
     long_description=open('README.rst').read(),
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
         'Intended Audience :: Developers',
     ],

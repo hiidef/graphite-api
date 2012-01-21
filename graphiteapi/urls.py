@@ -8,6 +8,8 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 
 urlpatterns = patterns('graphiteapi.views',
-    ('^stats/list/?', 'stats_list'),
+    ('^stats/list/?$', 'stats_list'),
+    ('^stats/del/?$', 'stats_del'),
+    ('^version/?$', 'version'),
     ('', 'index'),
 )
