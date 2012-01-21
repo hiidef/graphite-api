@@ -68,11 +68,24 @@ def stats_del(request):
     path = request.POST['path'].strip()
     path = path.replace('.', '/')
     ret = {'deleted': []}
+
+    def delete(file):
+        os.unlink(file)
+        ret['deleted'].append(file)
+
+    def removedir(abspath):
+        for base, dirs, files in os.walk(abspath):
+            absfiles = ['%s/%s' % (base, f) for f in files]
+            for file in absfiles:
+                delete(absfile)
+
     for directory in settings.DATA_DIRS:
-        joined = '%s.wsp' % os.path.join(directory, path)
-        if os.path.isfile(joined):
-            os.unlink(joined)
-            ret['deleted'].append(joined)
+        abspath = os.path.join(directory, path)
+        if os.path.isfile('%s.wsp' % abspath):
+            delete('%s.wsp' % abspath)
+        elif os.path.isdir(abspath):
+            removedir(abspath)
+            os.removedirs(abspath)
     return ret
 
 @jsonresponse
